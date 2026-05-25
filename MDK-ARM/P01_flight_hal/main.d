@@ -52,3 +52,4 @@ p01_flight_hal\main.o: ./interface/Int_IP5305T.h
 p01_flight_hal\main.o: ./interface/int_motor.h
 p01_flight_hal\main.o: ./interface/int_led.h
 p01_flight_hal\main.o: ../common/Com_config.h
+p01_flight_hal\main.o: ./Application/App_recieve_data.h

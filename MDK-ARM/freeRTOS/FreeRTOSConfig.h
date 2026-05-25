@@ -80,7 +80,7 @@ NVIC value of 255. */
 
 // 宏定义覆盖
 #define xPortPendSVHandler PendSV_Handler
-#define xPortSVCHandler SysTick_Handler
+#define vPortSVCHandler SVC_Handler
 #define INCLUDE_xTaskGetSchedulerState 1
 
 

@@ -18,7 +18,7 @@ LED_Struct left_bottom_led = {.GPIOX = LED4_GPIO_Port, .GPIO_Pin = LED4_Pin}; //
 //电源管理任务
 void power_task (void *args);
 #define power_task_STACK_SIZE 128  //128*4 = 512B
-#define power_task_PRIORITY 4       //优先级，数值越大优先级越高 
+#define power_task_PRIORITY 2       //优先级，数值越大优先级越高 
 TaskHandle_t power_task_handle;
 //定义任务周期
 #define POWER_TASK_PERIOD 10000 //10s
@@ -44,10 +44,10 @@ TaskHandle_t LED_task_handle;
 
 //通讯任务
 void com_task (void *args);
-#define COM_TASK_STACK_SIZE 128  //128*4 = 512B
-#define COM_TASK_PRIORITY 2       //优先级，数值越大优先级越高 
+#define COM_TASK_STACK_SIZE 512  //512*4 = 2KB (从256增加到512，防止栈溢出)
+#define COM_TASK_PRIORITY 4       //优先级，数值越大优先级越高 
 TaskHandle_t com_task_handle;
-#define COM_TASK_PERIOD 6           //定义任务周期
+#define COM_TASK_PERIOD 15           //定义任务周期
 
 
 
@@ -86,7 +86,7 @@ void power_task (void *args)
        vTaskDelayUntil(&xLastWakeTime, POWER_TASK_PERIOD); //延时10秒
         //启动电源
         IP5305T_start();
-       
+
         vTaskDelay(pdMS_TO_TICKS(1000)); //延时1秒
     }
 }
@@ -168,26 +168,33 @@ void LED_task (void *args)
         {
             count = 0;
         }
-    vTaskDelayUntil(&xLastWakeTime, LED_TASK_PERIOD); //延时100ms
+        vTaskDelayUntil(&xLastWakeTime, LED_TASK_PERIOD); //延时100ms
     }
 }
 
 
-uint8_t rx_buf[TX_PLOAD_WIDTH] = {0};
 void com_task (void *args)
 {
     //获取当前基准时间
      TickType_t xLastWakeTime = xTaskGetTickCount();
+     taskENTER_CRITICAL();
     while(1)
     {
-        //1.接收数据到缓存区
-        uint8_t res = int_SI24R1_RxPacket(rx_buf);
-        if (res == 0)
+        //debug_print("[com_task] Before App_recieve_data\r\n");
+        //接收遥控器数据，根据返回值更新连接状态
+        uint8_t rx_result = App_recieve_data();
+        //debug_print("[com_task] After App_recieve_data, result=%d\r\n", rx_result);
+        if (rx_result == 0)
         {
-            debug_print("成功接收数据: %s\n", rx_buf);
+            remote_state = REMOTE_CONNECT;
+            //debug_print("Remote connected\r\n");
         }
-        
-
+        else if (rx_result == 1)
+        {
+            remote_state = REMOTE_DISCONNECT;
+            //debug_print("Remote disconnected\r\n");
+        }
+        taskEXIT_CRITICAL();
         vTaskDelayUntil(&xLastWakeTime, COM_TASK_PERIOD); //6ms执行一次  发送 接收 的频率都设置为6ms  避免数据积压
     }
 }

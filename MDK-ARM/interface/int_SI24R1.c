@@ -92,6 +92,9 @@ uint8_t int_SI24R1_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t size)
 void int_SI24R1_RX_Mode(void)
 {
 	CE_LOW;
+
+	    int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + SETUP_AW, 0x03);  // 地址宽度5字节
+
 	int_SI24R1_Write_Buf(SI24R1_WRITE_REG + RX_ADDR_P0, TX_ADDRESS, TX_ADR_WIDTH); // 接收设备接收通道0使用和发送设备相同的发送地址
 	int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + EN_AA, 0x01);						   // 使能接收通道0自动应答
 	int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + EN_RXADDR, 0x01);					   // 使能接收通道0
@@ -100,7 +103,14 @@ void int_SI24R1_RX_Mode(void)
 	int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + RF_SETUP, 0x06);					   // 数据传输率1Mbps，发射功率6dBm
 	int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + CONFIG, 0x0f);						   // CRC使能，16位CRC校验，上电，接收模式
 	int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + STATUS, 0xff);						   // 清除所有的中断标志位
+
+	
+    HAL_Delay(2);  // 新增：等待晶振稳定 (PWR_UP需要1.5ms)
+    
+
 	CE_HIGH;																	   // 拉高CE启动接收设备
+
+
 }
 
 /********************************************************
@@ -135,6 +145,7 @@ uint8_t int_SI24R1_RxPacket(uint8_t *rxbuf)
 	uint8_t state;
 	//把读取到的状态寄存器的值写入状态寄存器 =》因为状态寄存器的标志位设计为 写 1 清除 =》通过标志位判断队列中是否有数据
 	state = int_SI24R1_Read_Reg(STATUS);			 // 读取状态寄存器的值
+	//debug_print("[int_SI24R1_RxPacket] STATUS=%02x, RX_DR=%d\r\n", state, (state & RX_DR) ? 1 : 0);
 	int_SI24R1_WRITE_REG(SI24R1_WRITE_REG + STATUS, state); // 清除RX_DS中断标志
 
 	if (state & RX_DR) // 接收到数据
@@ -194,15 +205,29 @@ void int_SI24R1_Init(void)
 
 	//1 测试SPI能否正常读写寄存器
 	//1.0 这个芯片得先读取一次，才能与主控芯片正常使用SPI
-	int_SI24R1_Read_Buf(SI24R1_WRITE_REG + TX_ADDR, si24r1_rx_buf, TX_ADR_WIDTH);
+	int_SI24R1_Read_Buf(SI24R1_READ_REG + TX_ADDR, si24r1_rx_buf, TX_ADR_WIDTH);
 
 	//1.1 写入发送地址
-	int_SI24R1_Write_Buf(SI24R1_WRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH); 
+	int_SI24R1_Write_Buf(SI24R1_WRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);
 
 	//1.2 读取同样的数据
-	int_SI24R1_Read_Buf(SI24R1_WRITE_REG + TX_ADDR, si24r1_rx_buf, TX_ADR_WIDTH);
+	int_SI24R1_Read_Buf(SI24R1_READ_REG + TX_ADDR, si24r1_rx_buf, TX_ADR_WIDTH);
 
 	debug_print("buf: %02x %02x %02x %02x %02x\r\n", si24r1_rx_buf[0], si24r1_rx_buf[1],
 		si24r1_rx_buf[2], si24r1_rx_buf[3], si24r1_rx_buf[4]);
+
+	//2 配置SI24R1进入接收模式
+	int_SI24R1_RX_Mode();
+
+
+    //3 验证配置是否生效
+    debug_print("CONFIG:   %02x (expect 0x0f)\r\n", int_SI24R1_Read_Reg(SI24R1_READ_REG + CONFIG));
+    debug_print("EN_AA:    %02x (expect 0x01)\r\n", int_SI24R1_Read_Reg(SI24R1_READ_REG + EN_AA));
+    debug_print("RF_CH:    %02x (expect 0x%02x)\r\n", int_SI24R1_Read_Reg(SI24R1_READ_REG + RF_CH), CHANNEL);
+    debug_print("RF_SETUP: %02x (expect 0x06)\r\n", int_SI24R1_Read_Reg(SI24R1_READ_REG + RF_SETUP));
 }
+
+
+	
+
 

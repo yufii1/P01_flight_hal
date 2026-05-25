@@ -51,3 +51,4 @@ p01_flight_hal\app_freertos_task.o: ./interface/int_led.h
 p01_flight_hal\app_freertos_task.o: ../common/Com_config.h
 p01_flight_hal\app_freertos_task.o: ./interface/int_SI24R1.h
 p01_flight_hal\app_freertos_task.o: ../Core/Inc/spi.h
+p01_flight_hal\app_freertos_task.o: Application\App_recieve_data.h
