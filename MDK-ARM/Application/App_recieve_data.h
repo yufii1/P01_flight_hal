@@ -9,6 +9,7 @@
 #include "int_SI24R1.h"
 #include "Com_debug.h"
 
+#define MAX_RETRY_COUNT 10       //最大重试次数
 
 /**
  * @brief 接收摇杆的数据=》解析为结构体
@@ -17,5 +18,18 @@
  * 
  */
 uint8_t App_recieve_data(void);
+
+/**
+ * @brief 处理连接状态位
+ * 
+ * @param res 上次接收数据的返回值
+ */
+void App_proccess_connect_state(uint8_t res);
+
+/**
+ * @brief 处理飞机的飞行状态
+ * 
+ */
+void App_proccess_flight_state(void);
 
 #endif // __APP_RECIEVE_DATA_H__

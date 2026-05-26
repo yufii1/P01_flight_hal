@@ -52,7 +52,10 @@ TaskHandle_t com_task_handle;
 
 
 //遥控器连接状态
-Remote_State remote_state = REMOTE_CONNECT; 
+Remote_State remote_state = REMOTE_DISCONNECT; 
+
+//飞行器姿态数据
+Remote_Data remote_data = {0};
 
 //飞行器飞行状态
 Flight_State flight_state = IDLE;
@@ -82,12 +85,20 @@ void power_task (void *args)
      TickType_t xLastWakeTime = xTaskGetTickCount();
     while(1)
     {
-        //每十秒执行一次，避免自动关机
-       vTaskDelayUntil(&xLastWakeTime, POWER_TASK_PERIOD); //延时10秒
-        //启动电源
-        IP5305T_start();
-
-        vTaskDelay(pdMS_TO_TICKS(1000)); //延时1秒
+    //     //每十秒执行一次，避免自动关机
+    //    vTaskDelayUntil(&xLastWakeTime, POWER_TASK_PERIOD); //延时10秒
+    //     //启动电源
+    //     IP5305T_start();
+        //使用直接任务通知实现电源管理
+        //等待任务通知 接到任务通知res=1  没有接到任务通知res=0
+        if (ulTaskNotifyTake(pdTRUE, POWER_TASK_PERIOD) == 1) //等待通知，收到通知后执行关机操作
+        {
+            IP5305T_shutdown();
+        }
+        else
+        {
+            IP5305T_start(); //没有接到通知，继续保持电源开启状态
+        }
     }
 }
 
@@ -180,20 +191,40 @@ void com_task (void *args)
      taskENTER_CRITICAL();
     while(1)
     {
-        //debug_print("[com_task] Before App_recieve_data\r\n");
-        //接收遥控器数据，根据返回值更新连接状态
-        uint8_t rx_result = App_recieve_data();
-        //debug_print("[com_task] After App_recieve_data, result=%d\r\n", rx_result);
-        if (rx_result == 0)
-        {
-            remote_state = REMOTE_CONNECT;
-            //debug_print("Remote connected\r\n");
-        }
-        else if (rx_result == 1)
-        {
-            remote_state = REMOTE_DISCONNECT;
-            //debug_print("Remote disconnected\r\n");
-        }
+        // debug_print("[com_task] Before App_recieve_data\r\n");
+        // 接收遥控器数据，根据返回值更新连接状态
+
+        // uint8_t res = App_recieve_data();
+
+        // debug_print("[com_task] After App_recieve_data, result=%d\r\n", res);
+        // if (res == 0)
+        // {
+        //    remote_state = REMOTE_CONNECT;
+        //     debug_print("Remote connected\r\n");
+        // }
+        // else if (res == 1)
+        // {
+        //    remote_state = REMOTE_DISCONNECT;
+        //     debug_print("Remote disconnected\r\n");
+        // }
+
+        //1.接收数据
+        uint8_t res = App_recieve_data();
+
+        //2.根据接收数据的返回值，处理飞机连接状态
+        App_proccess_connect_state(res); //根据接收结果处理连接状态
+
+        //3.处理关机指令
+            // if (remote_data.shutdown == 1)  这样写项目结构不完美，应该在电源管理任务中执行关机
+            // {
+            //     //执行关机
+            //     IP5305T_shutdown();
+            // }
+        //使用直接任务通知
+        xTaskNotifyGive(power_task_handle); //通知电源管理任务执行关机操作
+
+        //4.处理飞行模式切换指令
+        App_proccess_flight_state();
         taskEXIT_CRITICAL();
         vTaskDelayUntil(&xLastWakeTime, COM_TASK_PERIOD); //6ms执行一次  发送 接收 的频率都设置为6ms  避免数据积压
     }
