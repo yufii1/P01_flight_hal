@@ -52,7 +52,7 @@ I (./Application/App_freeRTOS_Task.h)(0x6A0F01E0)
 I (./interface/Int_IP5305T.h)(0x6A1552DE)
 I (./interface/int_motor.h)(0x69EB69D6)
 I (./interface/int_led.h)(0x69FC7E7E)
-I (../common/Com_config.h)(0x6A0D7EFC)
+I (../common/Com_config.h)(0x6A1A94F2)
 I (./Application/App_recieve_data.h)(0x6A155FBD)
 F (../Core/Src/gpio.c)(0x69F41AD5)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../common -I ./freeRTOS -I ./freeRTOS/include -I ./freeRTOS/portable -I ./Application -I ./interface-I.\RTE\_P01_flight_hal-IE:\Keil5stm32\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5stm32\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o p01_flight_hal\gpio.o --omf_browse p01_flight_hal\gpio.crf --depend p01_flight_hal\gpio.d)
 I (../Core/Inc/gpio.h)(0x69E9CAFB)
@@ -748,7 +748,7 @@ I (E:\Keil5stm32\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (E:\Keil5stm32\ARM\ARMCC\include\stdarg.h)(0x588B8344)
 I (E:\Keil5stm32\ARM\ARMCC\include\string.h)(0x588B8344)
 F (..\common\Com_debug.h)(0x69FC83AF)()
-F (..\common\Com_config.h)(0x6A0D7EFC)()
+F (..\common\Com_config.h)(0x6A1A94F2)()
 F (.\freeRTOS\croutine.c)(0x64020E50)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../common -I ./freeRTOS -I ./freeRTOS/include -I ./freeRTOS/portable -I ./Application -I ./interface-I.\RTE\_P01_flight_hal-IE:\Keil5stm32\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5stm32\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o p01_flight_hal\croutine.o --omf_browse p01_flight_hal\croutine.crf --depend p01_flight_hal\croutine.d)
 I (./freeRTOS/include/FreeRTOS.h)(0x64020E50)
 I (E:\Keil5stm32\ARM\ARMCC\include\stddef.h)(0x588B8344)
@@ -895,7 +895,7 @@ I (./freeRTOS/include/mpu_wrappers.h)(0x64020E50)
 I (./freeRTOS/include/task.h)(0x64020E50)
 I (./freeRTOS/include/list.h)(0x64020E50)
 F (.\freeRTOS\portable\portmacro.h)(0x64020E50)()
-F (.\Application\App_freeRTOS_Task.c)(0x6A156168)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../common -I ./freeRTOS -I ./freeRTOS/include -I ./freeRTOS/portable -I ./Application -I ./interface-I.\RTE\_P01_flight_hal-IE:\Keil5stm32\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5stm32\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o p01_flight_hal\app_freertos_task.o --omf_browse p01_flight_hal\app_freertos_task.crf --depend p01_flight_hal\app_freertos_task.d)
+F (.\Application\App_freeRTOS_Task.c)(0x6A1BEFB7)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../common -I ./freeRTOS -I ./freeRTOS/include -I ./freeRTOS/portable -I ./Application -I ./interface-I.\RTE\_P01_flight_hal-IE:\Keil5stm32\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5stm32\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o p01_flight_hal\app_freertos_task.o --omf_browse p01_flight_hal\app_freertos_task.crf --depend p01_flight_hal\app_freertos_task.d)
 I (Application\App_freeRTOS_Task.h)(0x6A0F01E0)
 I (./freeRTOS/include/FreeRTOS.h)(0x64020E50)
 I (E:\Keil5stm32\ARM\ARMCC\include\stddef.h)(0x588B8344)
@@ -944,14 +944,14 @@ I (./interface/Int_IP5305T.h)(0x6A1552DE)
 I (./interface/int_motor.h)(0x69EB69D6)
 I (../Core/Inc/tim.h)(0x69EB5D2C)
 I (./interface/int_led.h)(0x69FC7E7E)
-I (../common/Com_config.h)(0x6A0D7EFC)
+I (../common/Com_config.h)(0x6A1A94F2)
 I (./interface/int_SI24R1.h)(0x6A096B8C)
 I (../Core/Inc/spi.h)(0x69F41AD5)
 I (Application\App_recieve_data.h)(0x6A155FBD)
 F (.\Application\App_freeRTOS_Task.h)(0x6A0F01E0)()
-F (.\Application\App_recieve_data.c)(0x6A15606C)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../common -I ./freeRTOS -I ./freeRTOS/include -I ./freeRTOS/portable -I ./Application -I ./interface-I.\RTE\_P01_flight_hal-IE:\Keil5stm32\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5stm32\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o p01_flight_hal\app_recieve_data.o --omf_browse p01_flight_hal\app_recieve_data.crf --depend p01_flight_hal\app_recieve_data.d)
+F (.\Application\App_recieve_data.c)(0x6A1BF63C)(--c99 -c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../common -I ./freeRTOS -I ./freeRTOS/include -I ./freeRTOS/portable -I ./Application -I ./interface-I.\RTE\_P01_flight_hal-IE:\Keil5stm32\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include-IE:\Keil5stm32\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F10X_MD -DUSE_HAL_DRIVER -DSTM32F103xB-o p01_flight_hal\app_recieve_data.o --omf_browse p01_flight_hal\app_recieve_data.crf --depend p01_flight_hal\app_recieve_data.d)
 I (Application\App_recieve_data.h)(0x6A155FBD)
-I (../common/Com_config.h)(0x6A0D7EFC)
+I (../common/Com_config.h)(0x6A1A94F2)
 I (../Core/Inc/main.h)(0x69F41AD6)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x669E6878)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x69F41AD6)

@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -96,6 +97,7 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_SPI1_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   //实现最初的日志输出打印
   //HAL_UART_Transmit(&huart2, (uint8_t *)"Hello World\r\n", 13, 1000);

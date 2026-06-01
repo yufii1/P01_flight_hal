@@ -6,10 +6,15 @@ extern Flight_State flight_state;//飞行器飞行状态位
 
 extern Remote_State remote_state; //连接状态
 
-uint8_t retry_count = 0; // 定义一个重试计数器，记录连续接收失败的次数
-
+Thr_State thr_state = FREE; //油门解锁状态
 
 uint8_t rx_buf[TX_PLOAD_WIDTH] = {0}; // 定义一个静态接收缓冲区，存储从遥控器接收到的数据
+
+uint8_t retry_count = 0; 
+
+uint32_t MAX_ENTER_TIME ; //
+
+uint32_t MIN_ENTER_TIME ; //
 
 uint8_t App_recieve_data(void)
 {
@@ -91,10 +96,57 @@ void App_proccess_connect_state(uint8_t res)
  */
 static uint8_t App_proccess_unlock(void)
 {
+    //w为保证安全，解锁需要满足以下条件：
+    switch (thr_state)
+    {
+        case FREE:
+            if(remote_data.throttle >= 900 ) //油门大于解锁最小值
+            {
+                thr_state = MAX; //状态转移到MAX
+                MAX_ENTER_TIME = xTaskGetTickCount (); //记录进入MAX状态的时间
+            }break;
+        case MAX:
+            if(remote_data.throttle < 900) //油门小于解锁最小值
+            {
+                if (xTaskGetTickCount() - MAX_ENTER_TIME >= 1000)
+                {
+                    //在MAX状态超过1秒，执行离开MAX状态的动作
+                    thr_state = LEAVE_MAX; //状态转移到LEAVE_MAX
+                }
+                else
+                {
+                    thr_state = FREE; //状态转移到FREE
+                }
+            }break;
+        case LEAVE_MAX:
+            if(remote_data.throttle <= 100) //油门小于解锁最小值
+            {
+                thr_state = MIN; //状态转移到MIN
+                MIN_ENTER_TIME = xTaskGetTickCount(); //记录进入MIN状态的时间
+            }break;
+        case MIN:
+            if(remote_data.throttle > 100) //油门推出，中止解锁
+            {
+                thr_state = FREE; //状态转移到FREE
+            }
+            else if(xTaskGetTickCount() - MIN_ENTER_TIME >= 1000) //时间超过1秒且油门<=100
+            {
+                thr_state = UNLOCK; //状态转移到UNLOCK
+            }
+            break;
+        case UNLOCK:
+             break;
+            default:
+                break;
+            }
 
-    return 0;
-}
+        if (thr_state == UNLOCK)
+            {
+                return 0;
+            }
 
+            return 1;
+    }    
 /**
  * @brief 处理飞机的飞行状态
  * 
@@ -110,6 +162,7 @@ void App_proccess_flight_state(void)
             if(App_proccess_unlock() == 0) //如果解锁成功
             {
                 flight_state = NORMAL; //状态转移到正常飞行状态
+                thr_state = FREE; //油门解锁状态重置为FREEV
             }
 
             break;
@@ -142,9 +195,11 @@ void App_proccess_flight_state(void)
 
             break;
         case FAIL:
-            //7.处理失联状态，缓慢停止电机
-            //TODO
-            flight_state = NORMAL; //转移到正常状态
+            //7.处理失联状态，等待遥控器重连
+            if(remote_state == REMOTE_CONNECT) //遥控器重连成功
+            {
+                flight_state = IDLE; //转移到空闲状态
+            }
 
             break;
         default:

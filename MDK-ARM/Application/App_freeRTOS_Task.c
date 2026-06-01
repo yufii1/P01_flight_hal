@@ -47,7 +47,7 @@ void com_task (void *args);
 #define COM_TASK_STACK_SIZE 512  //512*4 = 2KB (从256增加到512，防止栈溢出)
 #define COM_TASK_PRIORITY 4       //优先级，数值越大优先级越高 
 TaskHandle_t com_task_handle;
-#define COM_TASK_PERIOD 15           //定义任务周期
+#define COM_TASK_PERIOD 6           //定义任务周期
 
 
 
@@ -188,44 +188,22 @@ void com_task (void *args)
 {
     //获取当前基准时间
      TickType_t xLastWakeTime = xTaskGetTickCount();
-     taskENTER_CRITICAL();
     while(1)
     {
-        // debug_print("[com_task] Before App_recieve_data\r\n");
-        // 接收遥控器数据，根据返回值更新连接状态
-
-        // uint8_t res = App_recieve_data();
-
-        // debug_print("[com_task] After App_recieve_data, result=%d\r\n", res);
-        // if (res == 0)
-        // {
-        //    remote_state = REMOTE_CONNECT;
-        //     debug_print("Remote connected\r\n");
-        // }
-        // else if (res == 1)
-        // {
-        //    remote_state = REMOTE_DISCONNECT;
-        //     debug_print("Remote disconnected\r\n");
-        // }
-
         //1.接收数据
         uint8_t res = App_recieve_data();
 
         //2.根据接收数据的返回值，处理飞机连接状态
         App_proccess_connect_state(res); //根据接收结果处理连接状态
 
-        //3.处理关机指令
-            // if (remote_data.shutdown == 1)  这样写项目结构不完美，应该在电源管理任务中执行关机
-            // {
-            //     //执行关机
-            //     IP5305T_shutdown();
-            // }
-        //使用直接任务通知
-        xTaskNotifyGive(power_task_handle); //通知电源管理任务执行关机操作
+        //3.处理关机指令 —— 只有遥控器发出关机信号时才通知电源管理任务
+        if (remote_data.shutdown == 1)
+        {
+            xTaskNotifyGive(power_task_handle); //通知电源管理任务执行关机操作
+        }
 
         //4.处理飞行模式切换指令
         App_proccess_flight_state();
-        taskEXIT_CRITICAL();
         vTaskDelayUntil(&xLastWakeTime, COM_TASK_PERIOD); //6ms执行一次  发送 接收 的频率都设置为6ms  避免数据积压
     }
 }
